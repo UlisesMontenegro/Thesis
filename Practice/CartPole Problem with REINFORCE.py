@@ -6,10 +6,11 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import matplotlib.pyplot as plt
 
 lr = 0.01 # Learning Rate
 gamma = 0.99 # Discount factor
-total_episodes = 300
+total_episodes = 1000
 
 # Defining Neural Network for the policy (Single one-layer MLP with 64 hidden units)
 class Pi(nn.Module):
@@ -66,6 +67,7 @@ def main():
     out_dim = env.action_space.n # 2
     pi = Pi(in_dim, out_dim) # Policy pi_theta for REINFORCE
     optimizer = optim.Adam(pi.parameters(), lr)
+    total_rewards = [] # To plot rewards per episode.
     for episode in range(total_episodes):
         done = False
         state = env.reset()[0]
@@ -75,7 +77,7 @@ def main():
             if truncated or terminated:
                 done = True
             pi.rewards.append(reward)
-            env.render()
+            #env.render()
             if done:
                 break
         loss = train(pi, optimizer) # Train per episode
@@ -83,7 +85,36 @@ def main():
         solved = total_reward > 195.0
         pi.onpolicy_reset() # onpolicy: clear memory after training
         print(f'Episode {episode}, loss: {loss}, \
-              total_reward: {total_reward}, solved: {solved}')
+            total_reward: {total_reward}, solved: {solved}')
+            
+        #if episode % 10 == 0:
+        total_rewards.append(total_reward)
+            
+    # Plotting rewards vs episodes
+    #plt.figure()
+    #plt.plot(np.arange(1, len(total_rewards)+1), total_rewards)
+    #plt.ylabel('Total Reward')
+    #plt.xlabel('Episode')
+    #plt.show()
+
+    failed = False
+    done = False
+    env = gym.make('CartPole-v1', render_mode = 'human')
+    print("Rendering")
+    state = env.reset()[0]
+    for t in range(200): # CartPole max timestep is 200
+        action = pi.act(state)
+        state, reward, truncated, terminated, _ = env.step(action)
+        if truncated or terminated:
+            done = True
+        env.render()
+        if done:
+            failed = True
+            break
+    if failed:
+        print("Attempt failed")
+    else:
+        print("Attempt passed successfully")
         
 if __name__ == '__main__':
     main()
