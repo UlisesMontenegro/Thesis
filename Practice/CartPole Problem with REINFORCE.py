@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 lr = 0.01 # Learning Rate
 gamma = 0.99 # Discount factor
-total_episodes = 1000
+total_episodes = 800
 
 # Defining Neural Network for the policy (Single one-layer MLP with 64 hidden units)
 class Pi(nn.Module):
@@ -57,7 +57,7 @@ def train(pi, optimizer):
     loss = torch.sum(loss)
     optimizer.zero_grad()
     loss.backward() # Backpropagate, compute gradients
-    optimizer.step() # Gradient-ascent, update the weights
+    optimizer.step() # Gradient-ascent, update the weights (Consider Stochastic Gradient Descent/Ascent if it is high computationally costly)
     return loss
 
 def main():
@@ -90,12 +90,14 @@ def main():
         #if episode % 10 == 0:
         total_rewards.append(total_reward)
             
+    '''
     # Plotting rewards vs episodes
-    #plt.figure()
-    #plt.plot(np.arange(1, len(total_rewards)+1), total_rewards)
-    #plt.ylabel('Total Reward')
-    #plt.xlabel('Episode')
-    #plt.show()
+    plt.figure()
+    plt.plot(np.arange(1, len(total_rewards)+1), total_rewards)
+    plt.ylabel('Total Reward')
+    plt.xlabel('Episode')
+    plt.show()
+    '''
 
     failed = False
     done = False

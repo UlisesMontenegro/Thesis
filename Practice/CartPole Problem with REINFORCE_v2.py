@@ -69,7 +69,7 @@ for episode in range(numEpisodes):
         episodeReward += reward
         episodeLenght += 1
 
-        # Endo the episode if the environment is done
+        # End the episode if the environment is done
         if done:
             print('Episode {} done !!!!!'.format(episode))
             break
@@ -113,4 +113,4 @@ for episode in range(numEpisodes):
         episodeLengths.append(episodeLenght)
         print("Total Episode Length: ", episodeLenght)
 
-        policyNetwork.save('policyNetwork.keras')
+        policyNetwork.save('D:\Uli\FIUBA\Tesis\Practica\policyNetwork.keras')
